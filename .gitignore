@@ -1,0 +1,16 @@
+# Сборка и кэш
+build/
+x64/
+out/
+.vs/
+*.exe
+*.o
+*.a
+*.vcxproj
+
+# Пакетный менеджер
+vcpkg_installed/
+vcpkg/
+
+# База данных
+postgres_data/

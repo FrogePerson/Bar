@@ -1,0 +1,33 @@
+version: '3.8'
+
+networks:
+  bar-net:
+    driver: overlay
+
+services:
+  backend:
+    build: . # Docker сам соберет образ из Dockerfile
+    image: local-bar-backend:latest
+    ports:
+      - "8080:8080" # Пробрасываем порт на твой компьютер (localhost:8080)
+    networks:
+      - bar-net
+    depends_on:
+      - db
+    deploy:
+      replicas: 1
+
+  db:
+    image: postgres:16-alpine
+    networks:
+      - bar-net
+    environment:
+      - POSTGRES_USER=app_user
+      - POSTGRES_PASSWORD=local_password
+      - POSTGRES_DB=bar_db
+    volumes:
+      # Пробрасываем init.sql в специальную папку. 
+      # Postgres выполнит его автоматически при создании базы.
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    deploy:
+      replicas: 1

@@ -1,0 +1,14 @@
+docker swarm init
+docker build -t local-bar-backend:latest .
+docker stack deploy -c docker-compose.yml my_local_bar
+
+
+Пауза:
+docker stack rm my_local_bar
+Продолжить:
+docker stack deploy -c docker-compose.yml my_local_bar
+
+СТОП:
+docker swarm leave --force
+docker system prune
+docker volume rm my_local_bar_postgres_data
