@@ -24,8 +24,38 @@
     <ClInclude Include="MenuService.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="ManuController.h">
+    <ClInclude Include="MenuController.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MenuController.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config.json">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="docker-compose.yml">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="Dockerfile">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="init.sql">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include=".gitignore">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
   </ItemGroup>
 </Project>

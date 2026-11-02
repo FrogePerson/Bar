@@ -7,16 +7,18 @@
         }
     ],
     "db_clients": [
-        {
-            "name": "default",
-            "rdbms": "postgresql",
-            "host": "db",
-            "port": 5432,
-            "dbname": "bar_db",
-            "user": "app_user",
-            "passwd": "local_password",
-            "is_fast": false,
-            "connection_number": 5
-        }
+      {
+        "name": "default",
+        "rdbms": "postgresql",
+        "host": "db",
+        "port": 5432,
+        "dbname": "bar_db",
+        "user": "app_user",
+        "passwd": "local_password",
+        "is_fast": false,
+        "connection_number": 5,
+        "client_encoding": "UTF8",
+        "connection_info": "keepalives=1 keepalives_idle=60 keepalives_interval=10 keepalives_count=3"
+      }
     ]
 }

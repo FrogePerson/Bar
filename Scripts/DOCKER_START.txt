@@ -7,6 +7,8 @@ docker stack deploy -c docker-compose.yml my_local_bar
 docker stack rm my_local_bar
 Продолжить:
 docker stack deploy -c docker-compose.yml my_local_bar
+RE:
+docker service update --force my_local_bar_backend
 
 СТОП:
 docker swarm leave --force

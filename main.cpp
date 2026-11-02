@@ -7,7 +7,6 @@ int main() {
 
     LOG_INFO << "Gooooool!";
 
-    // Запускаем бесконечный цикл сервера
     drogon::app().run();
 
     return 0;
