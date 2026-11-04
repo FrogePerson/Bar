@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><Бар 12.8></title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Бар 12.8 и пиво и плов и бургеры">
+    <meta name="keywords" content="бар, коктейли, крафтовое пиво, живая музыка, забронировать столик, бургеры, афиша мероприятий">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph (Telegram, VK, мессенджеры) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="BAR & KITCHEN — Крафтовый бар и кухня">
+    <meta property="og:description" content="Авторские коктейли, крафт и живая музыка каждые выходные. Забронируйте столик онлайн.">
+    <meta property="og:image" content="/img/main-bg.jpg">
+    <meta property="og:url" content="https://mybar.ru/">
+
+    <!-- Schema.org JSON-LD (Семантика для Яндекса и Google) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BarOrPub",
+      "name": "BAR & KITCHEN",
+      "image": "https://mybar.ru/img/main-bg.jpg",
+      "url": "https://mybar.ru/",
+      "telephone": "+79990000000",
+      "priceRange": "$$",
+      "servesCuisine": ["Крафтовое пиво", "Коктейли", "Европейская кухня"],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Центральная, д. 12",
+        "addressLocality": "Москва",
+        "postalCode": "101000",
+        "addressCountry": "RU"
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "16:00",
+          "closes": "03:00"
+        }
+      ]
+    }
+    </script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Навигация -->
+    <header class="header">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Бар 12.8</a>
+            <nav class="nav-links">
+                <a href="#about">О нас</a>
+                <a href="#events">Афиша</a>
+                <a href="#menu">Меню</a>
+                <a href="#gallery">Интерьер</a>
+                <a href="#contacts">Контакты</a>
+            </nav>
+            <button class="btn btn-primary" onclick="openBookingModal()">Забронировать</button>
+        </div>
+    </header>
+
+    <!-- Главный баннер (Hero) -->
+    <section class="hero" id="about">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <span class="sub-title">Атмосфера, крафт и гастрономия</span>
+            <h1>ЛЕГЕНДАРНЫЕ ВЕЧЕРА И АВТОРСКИЕ КОКТЕЙЛИ</h1>
+            <p>Уютный лофт в центре города, живая музыка каждые выходные и уникальная коллекция напитков со всего мира.</p>
+            <div class="hero-actions">
+                <a href="#menu" class="btn btn-outline">Смотреть меню</a>
+                <button class="btn btn-primary" onclick="openBookingModal()">Столик на вечер</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ивенты и акции -->
+    <section class="section" id="events">
+        <div class="container">
+            <div class="section-header">
+                <h2>События & Акции</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="grid-events" id="events-container">
+                <p class="loading">Загрузка афиши...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Меню с переключением категорий -->
+    <section class="section bg-darker" id="menu">
+        <div class="container">
+            <div class="section-header">
+                <h2>Наше Меню</h2>
+                <div class="divider"></div>
+                <div class="menu-tabs">
+                    <button class="tab-btn active" onclick="filterMenu('all', event)">Все</button>
+                    <button class="tab-btn" onclick="filterMenu('kitchen', event)">Кухня</button>
+                    <button class="tab-btn" onclick="filterMenu('cocktails', event)">Коктейли</button>
+                    <button class="tab-btn" onclick="filterMenu('bar', event)">Пиво и Напитки</button>
+                </div>
+            </div>
+            <div class="grid-menu" id="menu-container">
+                <p class="loading">Загрузка позиций меню...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Галерея -->
+    <section class="section" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <h2>Интерьер & Атмосфера</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="grid-gallery" id="gallery-container">
+                <p class="loading">Загрузка фотографий...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подвал / Контакты -->
+    <footer class="footer" id="contacts">
+        <div class="container footer-content">
+            <div class="footer-block">
+                <h3>Локация</h3>
+                <p>ул. Центральная, д. 12</p>
+                <p>Ежедневно с 16:00 до 03:00</p>
+            </div>
+            <div class="footer-block">
+                <h3>Бронирование</h3>
+                <p>+7 (999) 000-00-00</p>
+                <p>info@mybar.ru</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Модалка бронирования стола -->
+    <div class="modal" id="bookingModal" aria-hidden="true">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeBookingModal()">&times;</span>
+            <h3>Бронирование столика</h3>
+            <form id="bookingForm" onsubmit="submitBooking(event)">
+                <input type="text" name="name" placeholder="Ваше имя" required autocomplete="name">
+                <input type="tel" name="phone" placeholder="Телефон (+7...)" required autocomplete="tel">
+                <div class="row">
+                    <input type="date" name="date" required id="bookingDate">
+                    <input type="time" name="time" required>
+                </div>
+                <input type="number" name="persons" min="1" max="20" placeholder="Количество гостей" required value="2">
+                <button type="submit" class="btn btn-primary btn-block" id="bookingSubmitBtn">Подтвердить заявку</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
