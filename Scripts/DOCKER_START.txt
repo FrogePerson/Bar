@@ -14,3 +14,11 @@ docker service update --force my_local_bar_backend
 docker swarm leave --force
 docker system prune
 docker volume rm my_local_bar_postgres_data
+
+
+
+
+
+Деплой ФРОНТ:
+scp -r ./frontend/* root@46.226.166.51:/root/bar_project/frontend/
+chmod -R 755 /root/bar_project/frontend

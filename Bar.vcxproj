@@ -141,7 +141,11 @@
     <None Include="config.json" />
     <None Include="docker-compose.yml" />
     <None Include="Dockerfile" />
+    <None Include="frontend\css\style.css" />
+    <None Include="frontend\index.html" />
+    <None Include="frontend\js\main.js" />
     <None Include="init.sql" />
+    <None Include="nginx.conf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

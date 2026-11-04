@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Файлы ресурсов\Static">
+      <UniqueIdentifier>{92dd756a-2fe1-4a53-94da-e2d47becb355}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dish.h">
@@ -56,6 +59,18 @@
     </None>
     <None Include=".gitignore">
       <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="nginx.conf">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="frontend\index.html">
+      <Filter>Файлы ресурсов\Static</Filter>
+    </None>
+    <None Include="frontend\js\main.js">
+      <Filter>Файлы ресурсов\Static</Filter>
+    </None>
+    <None Include="frontend\css\style.css">
+      <Filter>Файлы ресурсов\Static</Filter>
     </None>
   </ItemGroup>
 </Project>
