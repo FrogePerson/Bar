@@ -28,6 +28,7 @@ services:
       - bar-net
     depends_on:
       - db
+    entrypoint: /bin/sh -c "sleep 10 && ./bar_backend"
     deploy:
       replicas: 1
 
@@ -43,3 +44,4 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     deploy:
       replicas: 1
+      endpoint_mode: dnsrr

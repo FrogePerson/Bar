@@ -11,13 +11,15 @@ public:
         auto client = drogon::app().getDbClient();
 
         try {
-            auto result = client->execSqlSync("SELECT id, name, cost FROM dishes");
+            auto result = client->execSqlSync("SELECT id, name, cost, image_url, description FROM dishes");
 
             for (auto row : result) {
                 dishes.emplace_back(
                     row["id"].as<int>(),
                     row["name"].as<std::string>(),
-                    row["cost"].as<int>()
+                    row["cost"].as<int>(),
+                    row["image_url"].as<std::string>(),
+                    row["description"].as<std::string>()
                 );
             }
         }
@@ -30,11 +32,11 @@ public:
     static Dish Insert(const Dish& dish) {
         auto client = drogon::app().getDbClient();
         auto result = client->execSqlSync(
-            "INSERT INTO dishes (name, cost) VALUES ($1, $2) RETURNING id",
-            dish.name, dish.cost
+            "INSERT INTO dishes (name, cost, image_url, description) VALUES ($1, $2, $3, $4) RETURNING id",
+            dish.name, dish.cost, dish.imageUrl, dish.description
         );
 
         int newId = result[0]["id"].as<int>();
-        return Dish(newId, dish.name, dish.cost);
+        return Dish(newId, dish.name, dish.cost, dish.imageUrl, dish.description);
     }
 };

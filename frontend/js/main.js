@@ -1,7 +1,6 @@
 let allDishes = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Ставим минимальную дату бронирования на сегодня
     const dateInput = document.getElementById('bookingDate');
     if (dateInput) {
         dateInput.min = new Date().toISOString().split('T')[0];
@@ -12,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchGallery();
 });
 
-// Защита от XSS при вставке данных из БД
 function escapeHtml(str) {
     if (!str) return '';
     return String(str)
@@ -23,11 +21,9 @@ function escapeHtml(str) {
         .replace(/'/g, '&#039;');
 }
 
-// 1. Получение меню
 async function fetchMenu() {
-    // ДОБАВЛЕНО: Проверяем, загружали ли мы уже меню
     if (allDishes.length > 0) {
-        return; // Выходим из функции, если данные уже есть
+        return;
     }
 
     const container = document.getElementById('menu-container');
@@ -49,22 +45,31 @@ function renderMenu(dishes) {
         return;
     }
 
-    container.innerHTML = dishes.map(dish => `
-        <div class="menu-card">
-            <img class="menu-img" 
-                 src="${escapeHtml(dish.imageUrl) || 'img/dish-placeholder.png'}" 
-                 alt="${escapeHtml(dish.name)}" 
-                 loading="lazy"
-                 onerror="this.onerror=null; this.src='img/dish-placeholder.png';">
-            <div class="menu-info">
-                <div class="menu-header-row">
-                    <span class="dish-name">${escapeHtml(dish.name)}</span>
-                    <span class="dish-cost">${Number(dish.cost) || 0} ₽</span>
+    container.innerHTML = dishes.map(dish => {
+        // Безопасно обрабатываем поля, чтобы не словить ошибку от undefined
+        const imageUrl = dish.imageUrl ? escapeHtml(dish.imageUrl) : 'img/dish-placeholder.png';
+        const name = dish.name ? escapeHtml(dish.name) : 'Без названия';
+        const cost = Number(dish.cost) || 0;
+        const description = dish.description ? escapeHtml(dish.description) : '';
+
+        return `
+            <div class="menu-card">
+                <img class="menu-img" 
+                     src="${imageUrl}" 
+                     alt="${name}" 
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='img/dish-placeholder.png';">
+                <div class="menu-info">
+                    <div class="menu-header-row">
+                        <span class="dish-name">${name}</span>
+                        <span class="dish-cost">${cost} ₽</span>
+                    </div>
+                    <!-- Рендерим абзац только если описание реально существует -->
+                    ${description ? `<p class="dish-desc">${description}</p>` : ''}
                 </div>
-                <p class="dish-desc">${escapeHtml(dish.description)}</p>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function filterMenu(category, event) {
@@ -81,7 +86,6 @@ function filterMenu(category, event) {
     }
 }
 
-// 2. Получение афиши
 async function fetchEvents() {
     const container = document.getElementById('events-container');
     try {
@@ -114,7 +118,6 @@ async function fetchEvents() {
     }
 }
 
-// 3. Получение галереи
 async function fetchGallery() {
     const container = document.getElementById('gallery-container');
     try {
@@ -140,7 +143,6 @@ async function fetchGallery() {
     }
 }
 
-// 4. Модальное окно бронирования
 function openBookingModal() {
     const modal = document.getElementById('bookingModal');
     modal.style.display = 'flex';

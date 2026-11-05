@@ -25,7 +25,10 @@ void MenuController::saveDish(const drogon::HttpRequestPtr& req, std::function<v
 		return;
 	}
 
-	Dish newDish(0, (*jsonBody)["name"].asString(), (*jsonBody)["cost"].asInt());
+	std::string imageUrl = jsonBody->isMember("imageUrl") ? (*jsonBody)["imageUrl"].asString() : "/img/dish-placeholder.png";
+	std::string description = jsonBody->isMember("description") ? (*jsonBody)["description"].asString() : "";
+
+	Dish newDish(0, (*jsonBody)["name"].asString(), (*jsonBody)["cost"].asInt(), imageUrl, description);
 
 	Dish savedDish = MenuService::GetInstance().SaveDish(newDish);
 
