@@ -3,3 +3,10 @@ cd vcpkg
 .\bootstrap-vcpkg.bat
 .\vcpkg integrate install
 .\vcpkg install drogon[postgres]:x64-windows
+
+
+
+Установка apache2-utils на сервер:
+cd /root/bar_project
+apt update && apt install apache2-utils -y
+htpasswd -c .htpasswd boss

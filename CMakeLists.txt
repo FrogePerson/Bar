@@ -9,6 +9,7 @@ find_package(Drogon CONFIG REQUIRED)
 add_executable(${PROJECT_NAME} 
     main.cpp 
     MenuController.cpp
+    MenuControllerAdmin.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Drogon::Drogon)
