@@ -22,6 +22,8 @@ void MenuController::addDish(const drogon::HttpRequestPtr& req, std::function<vo
         std::string name = parameters["name"];
         std::string description = parameters["description"];
         int cost = std::stoi(parameters["cost"]);
+        bool recommended = true;
+        std::string category = "all";
 
         // std::string category = parameters["category"];
 
@@ -34,7 +36,7 @@ void MenuController::addDish(const drogon::HttpRequestPtr& req, std::function<vo
 
         std::string imageUrl = "/img/" + fileName;
 
-        Dish newDish(0, name, cost, imageUrl, description);
+        Dish newDish(0, name, cost, imageUrl, description, recommended, category);
         Dish savedDish = MenuService::GetInstance().SaveDish(newDish);
 
         auto resp = drogon::HttpResponse::newHttpJsonResponse(savedDish.toJson());

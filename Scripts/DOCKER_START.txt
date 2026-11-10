@@ -20,10 +20,15 @@ docker volume rm my_local_bar_postgres_data
 
 
 Деплой ФРОНТ:
+<<<<<<< Updated upstream
 ПК: scp -r ./frontend/* root@46.226.166.51:/root/bar_project/frontend/
 Сервер: chmod -R 755 /root/bar_project/frontend
 
 scp -r init.sql root@46.226.166.51:/root/bar_project/
+=======
+ПК:scp -r ./frontend/* root@46.226.166.51:/root/bar_project/frontend/
+Сервер: chmod -R 755 /root/bar_project/frontend
+>>>>>>> Stashed changes
 
 Деплой бек:
 docker build -t ghcr.io/frogeperson/bar-backend:latest .

@@ -1,16 +1,18 @@
-let allDishes = [];
-
 document.addEventListener('DOMContentLoaded', () => {
+    // Ограничение даты для бронирования (из твоего оригинального кода)
     const dateInput = document.getElementById('bookingDate');
     if (dateInput) {
         dateInput.min = new Date().toISOString().split('T')[0];
     }
 
     fetchEvents();
-    fetchMenu();
     fetchGallery();
+    
+    // Загружаем категорию 'all' по умолчанию
+    fetchMenu('all'); 
 });
 
+// Экранирование HTML
 function escapeHtml(str) {
     if (!str) return '';
     return String(str)
@@ -21,33 +23,48 @@ function escapeHtml(str) {
         .replace(/'/g, '&#039;');
 }
 
-async function fetchMenu() {
-    if (allDishes.length > 0) {
-        return;
-    }
+// ---------------------------------------------------
+// ЛОГИКА МЕНЮ (Обновлена для серверной фильтрации)
+// ---------------------------------------------------
 
-    const container = document.getElementById('menu-container');
+// Запрашиваем меню с бэкенда с передачей категории
+async function fetchMenu(category = 'all') {
+    const regularContainer = document.getElementById('menu-regular-container') || document.getElementById('menu-container');
+    const topContainer = document.getElementById('menu-top-container');
+
     try {
-        const response = await fetch('/api/menu');
+        // Отправляем GET-запрос с query-параметром (например, /api/menu?category=kitchen)
+        const response = await fetch(`/api/menu?category=${encodeURIComponent(category)}`);
         if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-        allDishes = await response.json();
-        renderMenu(allDishes);
+        
+        const dishes = await response.json();
+        renderMenu(dishes);
     } catch (err) {
         console.warn('Сервер /api/menu недоступен:', err);
-        container.innerHTML = '<p class="loading">Меню обновляется. Уточняйте позиции у бармена.</p>';
+        regularContainer.innerHTML = '<p class="loading">Меню обновляется. Уточняйте позиции у бармена.</p>';
+        if (topContainer) topContainer.innerHTML = '';
     }
 }
 
+// Разделение массива и отрисовка
 function renderMenu(dishes) {
-    const container = document.getElementById('menu-container');
+    // Если id "menu-regular-container" еще нет в HTML, используем старый "menu-container" для обратной совместимости
+    const regularContainer = document.getElementById('menu-regular-container') || document.getElementById('menu-container');
+    const topContainer = document.getElementById('menu-top-container');
+
     if (!dishes || dishes.length === 0) {
-        container.innerHTML = '<p class="loading">В данной категории пока ничего нет.</p>';
+        regularContainer.innerHTML = '<p class="loading">В данной категории пока ничего нет.</p>';
+        if (topContainer) topContainer.innerHTML = '';
         return;
     }
 
-    container.innerHTML = dishes.map(dish => {
-        // Безопасно обрабатываем поля, чтобы не словить ошибку от undefined
-        const imageUrl = dish.imageUrl ? escapeHtml(dish.imageUrl) : 'img/dish-placeholder.png';
+    // Фильтруем на основе поля recommended (или is_top, смотря как назвали в C++)
+    const topDishes = dishes.filter(d => d.recommended === true);
+    const regularDishes = dishes.filter(d => d.recommended !== true);
+
+    // Функция-шаблон для генерации одной карточки
+    const createCard = (dish) => {
+        const imageUrl = (dish.imageUrl || dish.image_url) ? escapeHtml(dish.imageUrl || dish.image_url) : 'img/dish-placeholder.png';
         const name = dish.name ? escapeHtml(dish.name) : 'Без названия';
         const cost = Number(dish.cost) || 0;
         const description = dish.description ? escapeHtml(dish.description) : '';
@@ -58,34 +75,39 @@ function renderMenu(dishes) {
                      src="${imageUrl}" 
                      alt="${name}" 
                      loading="lazy"
-                     onerror="this.onerror=null; this.src='img/dish-placeholder.png';">
+                     onerror="this.onerror=null; this.style.visibility='hidden';">
                 <div class="menu-info">
                     <div class="menu-header-row">
                         <span class="dish-name">${name}</span>
                         <span class="dish-cost">${cost} ₽</span>
                     </div>
-                    <!-- Рендерим абзац только если описание реально существует -->
                     ${description ? `<p class="dish-desc">${description}</p>` : ''}
                 </div>
             </div>
         `;
-    }).join('');
+    };
+
+    // Отрисовываем
+    if (topContainer) topContainer.innerHTML = topDishes.map(createCard).join('');
+    if (regularContainer) regularContainer.innerHTML = regularDishes.map(createCard).join('');
 }
 
+// Вызывается при клике на вкладки меню (из HTML: onclick="filterMenu('kitchen', event)")
 function filterMenu(category, event) {
+    // Обновляем визуальное состояние кнопок
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     if (event && event.target) {
         event.target.classList.add('active');
     }
 
-    if (category === 'all') {
-        renderMenu(allDishes);
-    } else {
-        const filtered = allDishes.filter(d => d.category === category);
-        renderMenu(filtered);
-    }
+    // Идем на сервер за отфильтрованным списком
+    fetchMenu(category);
 }
 
+
+// ---------------------------------------------------
+// АФИША (Без изменений)
+// ---------------------------------------------------
 async function fetchEvents() {
     const container = document.getElementById('events-container');
     try {
@@ -118,6 +140,9 @@ async function fetchEvents() {
     }
 }
 
+// ---------------------------------------------------
+// ГАЛЕРЕЯ (Без изменений)
+// ---------------------------------------------------
 async function fetchGallery() {
     const container = document.getElementById('gallery-container');
     try {
@@ -143,6 +168,9 @@ async function fetchGallery() {
     }
 }
 
+// ---------------------------------------------------
+// БРОНИРОВАНИЕ (Без изменений)
+// ---------------------------------------------------
 function openBookingModal() {
     const modal = document.getElementById('bookingModal');
     modal.style.display = 'flex';

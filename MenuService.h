@@ -10,8 +10,8 @@ public:
 		return instance;
 	}
 
-	std::vector<Dish> GetDishes() {
-		return DishRepository::SelectAll();
+	std::vector<Dish> GetDishes(const std::string& category) {
+		return DishRepository::SelectAll(category);
 	}
 
 	Dish SaveDish(const Dish& dish) {
