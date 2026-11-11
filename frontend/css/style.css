@@ -258,36 +258,81 @@ h1, h2, h3, .logo {
 }
 
 /* Events */
-.grid-events {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 25px;
+/* Превращаем твой контейнер в горизонтальную карусель */
+#events-container {
+    display: flex !important; /* !important перебьет старые стили grid-events, если они есть */
+    flex-wrap: nowrap; /* Запрещаем перенос на новую строку */
+    overflow-x: auto; /* Включаем скролл */
+    gap: 20px;
+    padding: 10px 5px 20px 5px; /* Отступы для теней */
+    scroll-behavior: smooth;
+    /* Скрываем ползунок */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
+    #events-container::-webkit-scrollbar {
+        display: none;
+    }
+
+/* Стили для самих баннеров */
+.event-banner-link {
+    text-decoration: none;
+    color: #fff;
+    flex: 0 0 auto;
+    width: 280px; /* Ширина одной карточки */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px;
+}
+
+    .event-banner-link:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(204, 164, 113, 0.15); /* Цвет тени под твой дизайн */
+    }
+
 .event-card {
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
     overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .event-img {
     width: 100%;
-    height: 220px;
+    height: 160px;
     object-fit: cover;
-    background-color: #1e1e24;
 }
 
 .event-info {
-    padding: 20px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
 }
 
 .event-date {
-    color: var(--accent);
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-    display: block;
+    font-size: 0.85em;
+    color: #cca471; /* Золотистый цвет из твоего меню */
+    font-weight: bold;
+}
+
+.event-info h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.event-desc {
+    margin: 0;
+    font-size: 0.9em;
+    color: #aaa;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 /* Gallery */

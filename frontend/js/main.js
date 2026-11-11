@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Ограничение даты для бронирования (из твоего оригинального кода)
     const dateInput = document.getElementById('bookingDate');
     if (dateInput) {
         dateInput.min = new Date().toISOString().split('T')[0];
@@ -24,7 +23,7 @@ function escapeHtml(str) {
 }
 
 // ---------------------------------------------------
-// ЛОГИКА МЕНЮ (Обновлена для серверной фильтрации)
+// ЛОГИКА МЕНЮ 
 // ---------------------------------------------------
 
 // Запрашиваем меню с бэкенда с передачей категории
@@ -106,7 +105,7 @@ function filterMenu(category, event) {
 
 
 // ---------------------------------------------------
-// АФИША (Без изменений)
+// АФИША 
 // ---------------------------------------------------
 async function fetchEvents() {
     const container = document.getElementById('events-container');
@@ -121,18 +120,23 @@ async function fetchEvents() {
         }
 
         container.innerHTML = events.map(evt => `
-            <div class="event-card">
-                <img class="event-img" 
-                     src="${escapeHtml(evt.imageUrl) || 'img/event-placeholder.jpg'}" 
-                     alt="${escapeHtml(evt.title)}" 
-                     loading="lazy"
-                     onerror="this.src='img/event-placeholder.jpg'">
-                <div class="event-info">
-                    <span class="event-date">${escapeHtml(evt.date)}</span>
-                    <h3>${escapeHtml(evt.title)}</h3>
-                    <p class="dish-desc">${escapeHtml(evt.description)}</p>
+            <!-- Оборачиваем карточку в ссылку и передаем ID в адресную строку -->
+            <a href="/event.html?id=${evt.id}" class="event-banner-link">
+                <div class="event-card">
+                    <img class="event-img" 
+                         src="${escapeHtml(evt.imageUrl) || 'img/dish-placeholder.png'}" 
+                         alt="${escapeHtml(evt.name)}" 
+                         loading="lazy"
+                         onerror="this.src='img/event-placeholder.png'">
+                    <div class="event-info">
+                        <!-- Обращаемся к правильным полям из базы: event_date и name -->
+                        <span class="event-date">${escapeHtml(evt.event_date)}</span>
+                        <h3>${escapeHtml(evt.name)}</h3>
+                        <!-- Заменили класс dish-desc на event-desc -->
+                        <p class="event-desc">${escapeHtml(evt.description)}</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         `).join('');
     } catch (err) {
         console.warn('Сервер /api/events недоступен:', err);

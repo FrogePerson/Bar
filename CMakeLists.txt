@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME}
     main.cpp 
     MenuController.cpp
     MenuControllerAdmin.cpp
+    EventController.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Drogon::Drogon)

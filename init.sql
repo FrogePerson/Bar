@@ -11,3 +11,17 @@ CREATE TABLE IF NOT EXISTS dishes (
 
 INSERT INTO dishes (name, cost, image_url, description, category, recommended) VALUES ('Бургер0', 350, '/img/dish-placeholder.png', 'Описание 0', 'kitchen', 'TRUE');
 INSERT INTO dishes (name, cost, image_url, description, category, recommended) VALUES ('Бургер1', 650, '/img/i.png', 'Описание 1', 'cocktails', 'TRUE');
+
+
+CREATE TABLE IF NOT EXISTS events  (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    event_date TIMESTAMP,
+    image_url VARCHAR(512) DEFAULT '/img/dish-placeholder.png',
+    description TEXT DEFAULT '',
+    recommended BOOLEAN DEFAULT FALSE
+);
+
+
+INSERT INTO events (name, event_date, image_url, description, recommended) VALUES ('Событие 0', '2023-10-10 18:00:00', '/img/dish-placeholder.png', 'Описание 0', TRUE);
+INSERT INTO events (name, event_date, image_url, description, recommended) VALUES ('Событие 1', '2023-10-11 19:00:00', '/img/dish-placeholder.png', 'Описание 1', TRUE);
