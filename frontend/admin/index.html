@@ -1,118 +1,96 @@
 ﻿<!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Управление меню</title>
+    <title>Панель управления баром</title>
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #111;
             color: #fff;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
         }
 
         h2 {
             color: #c8a97e;
             text-align: center;
+            margin-bottom: 40px;
+            font-size: 24px;
         }
 
-        .form-group {
-            margin-bottom: 15px;
+        .menu-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
         }
 
-        label {
+        .admin-btn {
             display: block;
-            margin-bottom: 5px;
-            color: #aaa;
-        }
-
-        input, textarea, select {
             width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
+            padding: 20px;
             background: #222;
-            border: 1px solid #444;
             color: #fff;
-            border-radius: 6px;
+            text-decoration: none;
+            text-align: center;
+            border: 1px solid #444;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            box-sizing: border-box;
         }
 
-        button {
-            width: 100%;
-            padding: 15px;
+        /* Выделяем самую частую кнопку золотистым цветом */
+        .admin-btn.primary {
             background: #c8a97e;
             color: #000;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            margin-top: 10px;
+            border-color: #c8a97e;
         }
 
-        #status {
-            margin-top: 15px;
-            text-align: center;
-            font-weight: bold;
+        .admin-btn:active {
+            transform: scale(0.98);
+        }
+
+        .admin-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        /* Метка для кнопок, которые пока не работают */
+        .admin-btn.disabled::after {
+            content: "(в разработке)";
+            display: block;
+            font-size: 12px;
+            font-weight: 400;
+            margin-top: 5px;
+            color: #888;
         }
     </style>
 </head>
+
 <body>
-    <h2>Добавить блюдо</h2>
-    <form id="dishForm">
-        <div class="form-group">
-            <label>Категория</label>
-            <select name="category" required>
-                <option value="kitchen" selected>Кухня</option>
-                <option value="cocktails">Коктейли</option>
-                <option value="bar">Пиво и Напитки</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Название</label>
-            <input type="text" name="name" required placeholder="Бургер классика">
-        </div>
-        <div class="form-group">
-            <label>Цена (₽)</label>
-            <input type="number" name="cost" required placeholder="450">
-        </div>
-        <div class="form-group">
-            <label>Описание</label>
-            <textarea name="description" rows="3" placeholder="Состав..."></textarea>
-        </div>
-        <div class="form-group">
-            <label>Фотография</label>
-            <input type="file" name="image" accept="image/*" required>
-        </div>
-        <button type="submit">Сохранить в меню</button>
-        <div id="status"></div>
-    </form>
+    <h2>Панель управления</h2>
 
-    <script>document.getElementById('dishForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const statusBlock = document.getElementById('status');
-            statusBlock.style.color = '#fff';
-            statusBlock.innerText = 'Отправка...';
+    <div class="menu-grid">
+        <!-- Ведет на файл редактирования меню (твой старый код) -->
+        <a href="menu.html" class="admin-btn primary">Редактирование меню</a>
 
-            const formData = new FormData(e.target);
-
-            try {
-                const response = await fetch('/api/admin/addDish', {
-                    method: 'POST',
-                    body: formData // Браузер сам подставит нужные multipart заголовки
-                });
-
-                if (response.ok) {
-                    statusBlock.style.color = '#4caf50';
-                    statusBlock.innerText = 'Успешно добавлено!';
-                    e.target.reset(); // Очищаем форму
-                } else {
-                    statusBlock.style.color = '#f44336';
-                    statusBlock.innerText = 'Ошибка сервера: ' + response.status;
-                }
-            } catch (err) {
-                statusBlock.style.color = '#f44336';
-                statusBlock.innerText = 'Ошибка сети';
-            }
-        });</script>
+        <!-- Заглушки, которые пока ведут на текущую страницу (или никуда) -->
+        <a href="#" class="admin-btn disabled">Редактирование событий</a>
+        <a href="#" class="admin-btn disabled">Редактирование галереи</a>
+        <a href="#" class="admin-btn disabled">Управление сервером</a>
+    </div>
 </body>
+
 </html>

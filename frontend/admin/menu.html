@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <a href="index.html" style="color: #c8a97e; text-decoration: none; display: block; margin-bottom: 20px;">&larr; Назад в меню</a>
+    <title>Управление меню</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111;
+            color: #fff;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #c8a97e;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #c8a97e;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #status {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Добавить блюдо</h2>
+    <form id="dishForm">
+        <div class="form-group">
+            <label>Категория</label>
+            <select name="category" required>
+                <option value="kitchen" selected>Кухня</option>
+                <option value="cocktails">Коктейли</option>
+                <option value="bar">Пиво и Напитки</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Название</label>
+            <input type="text" name="name" required placeholder="Бургер классика">
+        </div>
+        <div class="form-group">
+            <label>Цена (₽)</label>
+            <input type="number" name="cost" required placeholder="450">
+        </div>
+        <div class="form-group">
+            <label>Описание</label>
+            <textarea name="description" rows="3" placeholder="Состав..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Фотография</label>
+            <input type="file" name="image" accept="image/*" required>
+        </div>
+        <button type="submit">Сохранить в меню</button>
+        <div id="status"></div>
+    </form>
+
+    <script>document.getElementById('dishForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const statusBlock = document.getElementById('status');
+            statusBlock.style.color = '#fff';
+            statusBlock.innerText = 'Отправка...';
+
+            const formData = new FormData(e.target);
+
+            try {
+                const response = await fetch('/api/admin/addDish', {
+                    method: 'POST',
+                    body: formData // Браузер сам подставит нужные multipart заголовки
+                });
+
+                if (response.ok) {
+                    statusBlock.style.color = '#4caf50';
+                    statusBlock.innerText = 'Успешно добавлено!';
+                    e.target.reset(); // Очищаем форму
+                } else {
+                    statusBlock.style.color = '#f44336';
+                    statusBlock.innerText = 'Ошибка сервера: ' + response.status;
+                }
+            } catch (err) {
+                statusBlock.style.color = '#f44336';
+                statusBlock.innerText = 'Ошибка сети';
+            }
+        });</script>
+</body>
+</html>
