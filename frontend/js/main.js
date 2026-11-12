@@ -111,35 +111,64 @@ function filterMenu(category, event) {
 // ---------------------------------------------------
 async function fetchEvents() {
     const container = document.getElementById('events-container');
+    if (!container) return;
+
     try {
         const response = await fetch('/api/events');
         if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
         const events = await response.json();
 
-        if (!events || events.length === 0) {
+        if (!Array.isArray(events) || events.length === 0) {
             container.innerHTML = '<p class="loading">На ближайшие дни мероприятий не запланировано.</p>';
             return;
         }
 
+        // Рендерим большие слайды-баннеры
         container.innerHTML = events.map(evt => `
-            <div class="event-card">
-                <img class="event-img" 
-                     src="${escapeHtml(evt.imageUrl) || 'img/event-placeholder.jpg'}" 
-                     alt="${escapeHtml(evt.title)}" 
+            <a href="/event.html?id=${evt.id}" class="event-banner-slide">
+                <img class="event-banner-img" 
+                     src="${escapeHtml(evt.imageUrl || evt.image_url) || ''}" 
+                     alt="${escapeHtml(evt.name)}" 
                      loading="lazy"
-                     onerror="this.src='img/event-placeholder.jpg'">
-                <div class="event-info">
-                    <span class="event-date">${escapeHtml(evt.date)}</span>
-                    <h3>${escapeHtml(evt.title)}</h3>
-                    <p class="dish-desc">${escapeHtml(evt.description)}</p>
+                     onerror="this.style.display='none'">
+                <div class="event-banner-overlay"></div>
+                <div class="event-banner-content">
+                    <span class="event-banner-date">${escapeHtml(evt.event_date || evt.formatted_date)}</span>
+                    <h3 class="event-banner-title">${escapeHtml(evt.name)}</h3>
+                    <p class="event-banner-desc">${escapeHtml(evt.description)}</p>
                 </div>
-            </div>
+            </a>
         `).join('');
     } catch (err) {
         console.warn('Сервер /api/events недоступен:', err);
         container.innerHTML = '<p class="loading">Афиша событий временно недоступна.</p>';
     }
 }
+
+
+// ---------------------------------------------------
+// ЛОГИКА СТРЕЛОК ДЛЯ АФИШИ
+// ---------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('events-container');
+    const prevBtn = document.getElementById('events-prev');
+    const nextBtn = document.getElementById('events-next');
+
+    if (container && prevBtn && nextBtn) {
+        // Прокрутка влево
+        prevBtn.addEventListener('click', () => {
+            // Прокручиваем на 90% ширины контейнера (ширина одного слайда)
+            container.scrollBy({ left: -container.clientWidth * 0.9, behavior: 'smooth' });
+        });
+
+        // Прокрутка вправо
+        nextBtn.addEventListener('click', () => {
+            container.scrollBy({ left: container.clientWidth * 0.9, behavior: 'smooth' });
+        });
+    }
+});
+
+
 
 // ---------------------------------------------------
 // ГАЛЕРЕЯ 
