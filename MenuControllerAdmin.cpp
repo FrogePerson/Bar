@@ -23,9 +23,8 @@ void MenuController::addDish(const drogon::HttpRequestPtr& req, std::function<vo
         std::string description = parameters["description"];
         int cost = std::stoi(parameters["cost"]);
         bool recommended = true;
-        std::string category = "all";
 
-        // std::string category = parameters["category"];
+        std::string category = parameters["category"];
 
         auto& imageFile = files[0];
         std::string ext = std::string(imageFile.getFileExtension());

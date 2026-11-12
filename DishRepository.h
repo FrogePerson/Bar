@@ -34,7 +34,7 @@ public:
     static Dish Insert(const Dish& dish) {
         auto client = drogon::app().getDbClient();
         auto result = client->execSqlSync(
-            "INSERT INTO dishes (name, cost, image_url, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+            "INSERT INTO dishes (name, cost, image_url, description, recommended, category) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
             dish.name, dish.cost, dish.imageUrl, dish.description, dish.recommended, dish.category
         );
 
