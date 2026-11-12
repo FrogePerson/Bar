@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Ограничение даты для бронирования (из твоего оригинального кода)
     const dateInput = document.getElementById('bookingDate');
     if (dateInput) {
         dateInput.min = new Date().toISOString().split('T')[0];
@@ -87,8 +88,9 @@ function renderMenu(dishes) {
     };
 
     // Отрисовываем
-    if (topContainer) topContainer.innerHTML = topDishes.map(createCard).join('');
-    if (regularContainer) regularContainer.innerHTML = regularDishes.map(createCard).join('');
+    if (regularContainer) {
+    regularContainer.innerHTML = dishes.map(createCard).join('');
+    }
 }
 
 // Вызывается при клике на вкладки меню (из HTML: onclick="filterMenu('kitchen', event)")
@@ -120,23 +122,18 @@ async function fetchEvents() {
         }
 
         container.innerHTML = events.map(evt => `
-            <!-- Оборачиваем карточку в ссылку и передаем ID в адресную строку -->
-            <a href="/event.html?id=${evt.id}" class="event-banner-link">
-                <div class="event-card">
-                    <img class="event-img" 
-                         src="${escapeHtml(evt.imageUrl) || 'img/dish-placeholder.png'}" 
-                         alt="${escapeHtml(evt.name)}" 
-                         loading="lazy"
-                         onerror="this.src='img/event-placeholder.png'">
-                    <div class="event-info">
-                        <!-- Обращаемся к правильным полям из базы: event_date и name -->
-                        <span class="event-date">${escapeHtml(evt.event_date)}</span>
-                        <h3>${escapeHtml(evt.name)}</h3>
-                        <!-- Заменили класс dish-desc на event-desc -->
-                        <p class="event-desc">${escapeHtml(evt.description)}</p>
-                    </div>
+            <div class="event-card">
+                <img class="event-img" 
+                     src="${escapeHtml(evt.imageUrl) || 'img/event-placeholder.jpg'}" 
+                     alt="${escapeHtml(evt.title)}" 
+                     loading="lazy"
+                     onerror="this.src='img/event-placeholder.jpg'">
+                <div class="event-info">
+                    <span class="event-date">${escapeHtml(evt.date)}</span>
+                    <h3>${escapeHtml(evt.title)}</h3>
+                    <p class="dish-desc">${escapeHtml(evt.description)}</p>
                 </div>
-            </a>
+            </div>
         `).join('');
     } catch (err) {
         console.warn('Сервер /api/events недоступен:', err);
@@ -145,7 +142,7 @@ async function fetchEvents() {
 }
 
 // ---------------------------------------------------
-// ГАЛЕРЕЯ (Без изменений)
+// ГАЛЕРЕЯ 
 // ---------------------------------------------------
 async function fetchGallery() {
     const container = document.getElementById('gallery-container');
@@ -173,7 +170,7 @@ async function fetchGallery() {
 }
 
 // ---------------------------------------------------
-// БРОНИРОВАНИЕ (Без изменений)
+// БРОНИРОВАНИЕ 
 // ---------------------------------------------------
 function openBookingModal() {
     const modal = document.getElementById('bookingModal');

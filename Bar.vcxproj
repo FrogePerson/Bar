@@ -126,10 +126,15 @@
   <ItemGroup>
     <ClInclude Include="Dish.h" />
     <ClInclude Include="DishRepository.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="EventController.h" />
+    <ClInclude Include="EventRepository.h" />
+    <ClInclude Include="EventService.h" />
     <ClInclude Include="MenuController.h" />
     <ClInclude Include="MenuService.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EventController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuController.cpp" />
     <ClCompile Include="MenuControllerAdmin.cpp" />
