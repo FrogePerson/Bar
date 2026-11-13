@@ -15,4 +15,6 @@ public:
     static std::optional<Dish> FindById(const int id);
 
     static bool DeleteDish(const int id);
+
+    static bool UpdateDish(const Dish& dish);
 };

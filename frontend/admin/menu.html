@@ -322,10 +322,22 @@
             // Обработчик кнопки "Изменить"
             document.getElementById('updateBtn').addEventListener('click', () => {
                 const form = document.getElementById('dishForm');
-                if (!form.reportValidity()) return; // Проверка валидации браузером
+
+                // Временно отключаем required у картинки перед проверкой валидации, 
+                // так как при обновлении картинка не обязательна
+                const imageInput = form.querySelector('input[name="image"]');
+                const wasRequired = imageInput.required;
+                imageInput.required = false;
+
+                // Теперь проверяем остальные поля (название, цена и тд)
+                const isValid = form.reportValidity();
+
+                // Возвращаем как было
+                imageInput.required = wasRequired;
+
+                if (!isValid) return;
 
                 const formData = new FormData(form);
-                // Вызов твоего будущего бэкенд метода changeDish
                 sendAdminRequest('/api/admin/changeDish', 'POST', formData);
             });
 

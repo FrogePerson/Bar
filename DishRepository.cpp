@@ -101,3 +101,44 @@ bool DishRepository::DeleteDish(const int id) {
     return false;
 
 }
+
+bool DishRepository::UpdateDish(const Dish& dish)
+{
+    auto client = drogon::app().getDbClient();
+
+    try {
+        if (dish.imageUrl.empty()) {
+            auto result = client->execSqlSync(
+                "UPDATE dishes "
+                "SET name = $1, cost = $2, description = $3, recommended = $4, category = $5 "
+                "WHERE id = $6",
+                dish.name,
+                dish.cost,
+                dish.description,
+                dish.recommended,
+                dish.category,
+                dish.id
+            );
+            return result.affectedRows() > 0;
+        }
+        else {
+            auto result = client->execSqlSync(
+                "UPDATE dishes "
+                "SET name = $1, cost = $2, image_url = $3, description = $4, recommended = $5, category = $6 "
+                "WHERE id = $7",
+                dish.name,
+                dish.cost,
+                dish.imageUrl,
+                dish.description,
+                dish.recommended,
+                dish.category,
+                dish.id
+            );
+            return result.affectedRows() > 0;
+        }
+    }
+    catch (const drogon::orm::DrogonDbException& e) {
+        LOG_ERROR << "DB Error in UpdateDish: " << e.base().what();
+        return false;
+    }
+}

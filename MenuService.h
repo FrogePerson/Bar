@@ -58,6 +58,11 @@ public:
 		return true;
 	}
 
+	bool ChangeDish(const Dish& dish) {
+
+		return DishRepository::UpdateDish(dish);
+	}
+
 private:
 	MenuService() = default;
 };
