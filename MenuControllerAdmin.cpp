@@ -51,3 +51,45 @@ void MenuController::addDish(const drogon::HttpRequestPtr& req, std::function<vo
         callback(resp);
     }
 }
+
+
+void MenuController::deleteDish(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback) {
+
+    LOG_INFO << "=== ЗАШЛИ В deleteDish ===";
+
+    drogon::MultiPartParser fileUpload;
+
+    if (fileUpload.parse(req) != 0) {
+        LOG_ERROR << "=== ОШИБКА ПАРСИНГА: Файл не найден или неверный формат ===";
+        auto resp = drogon::HttpResponse::newHttpResponse();
+        resp->setStatusCode(drogon::k400BadRequest);
+        callback(resp);
+        return;
+    }
+
+    auto parameters = fileUpload.getParameters();
+
+    try {
+        int id = std::stoi(parameters["id"]);
+
+        if (!MenuService::GetInstance().DeleteDish(id)) {
+            LOG_ERROR << "DELETE error! ";
+            auto resp = drogon::HttpResponse::newHttpResponse();
+            resp->setStatusCode(drogon::k400BadRequest);
+            callback(resp);
+            return;
+        }
+
+        auto resp = drogon::HttpResponse::newHttpResponse();
+        resp->setStatusCode(drogon::k200OK);
+        callback(resp);
+
+    }
+    catch (const std::exception& e) {
+        // Если при парсинге цены произошла ошибка (например, пустое поле)
+        LOG_ERROR << "Form processing error: " << e.what();
+        auto resp = drogon::HttpResponse::newHttpResponse();
+        resp->setStatusCode(drogon::k400BadRequest);
+        callback(resp);
+    }
+}

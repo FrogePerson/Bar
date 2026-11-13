@@ -7,6 +7,7 @@ public:
 	METHOD_LIST_BEGIN
 		ADD_METHOD_TO(MenuController::getDishes, "/api/menu", drogon::Get);
 		ADD_METHOD_TO(MenuController::addDish, "/api/admin/addDish", drogon::Post);
+		ADD_METHOD_TO(MenuController::deleteDish, "/api/admin/deleteDish", drogon::Post);
 	METHOD_LIST_END
 
 	void getDishes(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback);
@@ -14,5 +15,7 @@ public:
 	void saveDish(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback);
 
 	void addDish(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback);
+
+	void deleteDish(const drogon::HttpRequestPtr& req, std::function<void(const drogon::HttpResponsePtr&)>&& callback);
 
 };

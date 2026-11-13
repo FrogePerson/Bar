@@ -84,11 +84,24 @@
             <label>Фотография</label>
             <input type="file" name="image" accept="image/*" required>
         </div>
-        <button type="submit">Сохранить в меню</button>
+        <input type="hidden" name="id" id="dishId" value="">
+
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button type="submit" id="submitBtn" style="flex: 1;">Добавить в меню</button>
+            <button type="button" id="updateBtn" style="flex: 1; display: none; background: #c8a97e; color: #000; ">Изменить</button>
+            <button type="button" id="deleteBtn" style="flex: 1; display: none; background: #c8a97e; color: #000; ">Удалить</button>
+        </div>
+        <button type="button" id="cancelEditBtn" style="display: none; background: #555; color: #fff; margin-top: 10px;">Отменить редактирование</button>
         <div id="status"></div>
     </form>
 
-    <script>document.getElementById('dishForm').addEventListener('submit', async (e) => {
+    <h3 style="color: #c8a97e; text-align: center; margin-top: 40px;">Текущее меню</h3>
+    <div id="admin-menu-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+        <p class="loading" style="text-align: center; width: 100%;">Загрузка меню...</p>
+    </div>
+
+    <script>
+    document.getElementById('dishForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const statusBlock = document.getElementById('status');
             statusBlock.style.color = '#fff';
@@ -105,7 +118,8 @@
                 if (response.ok) {
                     statusBlock.style.color = '#4caf50';
                     statusBlock.innerText = 'Успешно добавлено!';
-                    e.target.reset(); // Очищаем форму
+                    e.target.reset();
+                    fetchAdminMenu();
                 } else {
                     statusBlock.style.color = '#f44336';
                     statusBlock.innerText = 'Ошибка сервера: ' + response.status;
@@ -114,6 +128,151 @@
                 statusBlock.style.color = '#f44336';
                 statusBlock.innerText = 'Ошибка сети';
             }
-        });</script>
+    });
+
+        // === ЛОГИКА ОТОБРАЖЕНИЯ МЕНЮ И ВЫБОРА КАРТОЧКИ ===
+
+        let currentAdminDishes = []; // Сохраняем загруженные блюда
+
+        // Загрузка меню (аналогично главной странице)
+        async function fetchAdminMenu() {
+            const container = document.getElementById('admin-menu-container');
+            try {
+                const response = await fetch('/api/menu?category=all');
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                currentAdminDishes = await response.json();
+                renderAdminMenu(currentAdminDishes);
+            } catch (err) {
+                console.warn('Сервер недоступен:', err);
+                container.innerHTML = '<p style="color: red;">Ошибка загрузки меню.</p>';
+            }
+        }
+
+        // Отрисовка карточек в админке
+        function renderAdminMenu(dishes) {
+            const container = document.getElementById('admin-menu-container');
+            if (!dishes || dishes.length === 0) {
+                container.innerHTML = '<p>Меню пусто.</p>';
+                return;
+            }
+
+            container.innerHTML = dishes.map(dish => {
+                const imageUrl = dish.imageUrl || dish.image_url || 'img/dish-placeholder.png';
+                const name = dish.name || 'Без названия';
+                const cost = dish.cost || 0;
+                const category = dish.category || 'all';
+
+                return `
+                <div class="menu-card" 
+                     onclick="fillFormForEdit(${dish.id})" 
+                     style="background: #222; border: 1px solid #444; border-radius: 8px; padding: 15px; cursor: pointer; transition: 0.2s;">
+                    <img src="${imageUrl}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">
+                    <div style="font-weight: bold;">${name}</div>
+                    <div style="color: #c8a97e;">${cost} ₽</div>
+                    <div style="font-size: 12px; color: #888; margin-top: 5px;">Категория: ${category}</div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        // Заполнение формы при клике на карточку
+        function fillFormForEdit(dishId) {
+            const dish = currentAdminDishes.find(d => d.id === dishId);
+            if (!dish) return;
+
+            const form = document.getElementById('dishForm');
+
+            // Заполняем поля (кроме картинки, file input нельзя заполнить программно по соображениям безопасности)
+            document.getElementById('dishId').value = dish.id;
+            form.name.value = dish.name;
+            form.cost.value = dish.cost;
+            form.description.value = dish.description || '';
+            form.category.value = dish.category || 'kitchen';
+
+            // Убираем обязательность с картинки при редактировании (если не выбрана новая, бэк оставит старую)
+            form.image.required = false;
+
+            // Переключаем видимость кнопок
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('updateBtn').style.display = 'block';
+            document.getElementById('deleteBtn').style.display = 'block';
+            document.getElementById('cancelEditBtn').style.display = 'block';
+
+            // Скроллим наверх к форме
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Сброс формы в режим добавления
+        function resetFormToCreate() {
+            const form = document.getElementById('dishForm');
+            form.reset();
+            document.getElementById('dishId').value = '';
+            form.image.required = true;
+
+            document.getElementById('submitBtn').style.display = 'block';
+            document.getElementById('updateBtn').style.display = 'none';
+            document.getElementById('deleteBtn').style.display = 'none';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+
+            document.getElementById('status').innerText = '';
+        }
+
+        document.getElementById('cancelEditBtn').addEventListener('click', resetFormToCreate);
+
+        // === ЛОГИКА ОТПРАВКИ ЗАПРОСОВ ===
+
+        // Вспомогательная функция для отправки
+        async function sendAdminRequest(url, method, formData) {
+            const statusBlock = document.getElementById('status');
+            statusBlock.style.color = '#fff';
+            statusBlock.innerText = 'Обработка...';
+
+            try {
+                const response = await fetch(url, { method: method, body: formData });
+                if (response.ok) {
+                    statusBlock.style.color = '#4caf50';
+                    statusBlock.innerText = 'Успешно!';
+                    resetFormToCreate();
+                    fetchAdminMenu(); // Перезагружаем список
+                } else {
+                    statusBlock.style.color = '#f44336';
+                    statusBlock.innerText = 'Ошибка сервера: ' + response.status;
+                }
+            } catch (err) {
+                statusBlock.style.color = '#f44336';
+                statusBlock.innerText = 'Ошибка сети';
+            }
+        }
+
+        // Обработчик кнопки "Изменить"
+        document.getElementById('updateBtn').addEventListener('click', () => {
+            const form = document.getElementById('dishForm');
+            if (!form.reportValidity()) return; // Проверка валидации браузером
+
+            const formData = new FormData(form);
+            // Вызов твоего будущего бэкенд метода changeDish
+            sendAdminRequest('/api/admin/changeDish', 'POST', formData);
+        });
+
+        // Обработчик кнопки "Удалить"
+        document.getElementById('deleteBtn').addEventListener('click', () => {
+            if (!confirm('Вы уверены, что хотите удалить это блюдо?')) return;
+
+            const dishId = document.getElementById('dishId').value;
+            const formData = new FormData();
+            formData.append('id', dishId);
+
+            // Вызов твоего будущего бэкенд метода deleteDish
+            sendAdminRequest('/api/admin/deleteDish', 'POST', formData);
+        });
+
+        // Запускаем загрузку меню при открытии страницы
+        window.addEventListener('DOMContentLoaded', fetchAdminMenu);
+
+
+
+    </script>
+
+
 </body>
 </html>
