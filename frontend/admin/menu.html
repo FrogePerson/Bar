@@ -151,6 +151,7 @@
 
         <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button type="submit" id="submitBtn" style="flex: 1;">Добавить в меню</button>
+            <button type="button" id="copyBtn" style="flex: 1; display: none; background: #c8a97e; color: #000; ">Добавить как новое</button>
             <button type="button" id="updateBtn" style="flex: 1; display: none; background: #c8a97e; color: #000; ">Изменить</button>
             <button type="button" id="deleteBtn" style="flex: 1; display: none; background: #c8a97e; color: #000; ">Удалить</button>
         </div>
@@ -268,6 +269,7 @@
                 form.image.required = false;
 
                 document.getElementById('submitBtn').style.display = 'none';
+                document.getElementById('copyBtn').style.display = 'block';
                 document.getElementById('updateBtn').style.display = 'block';
                 document.getElementById('deleteBtn').style.display = 'block';
                 document.getElementById('cancelEditBtn').style.display = 'block';
@@ -282,6 +284,7 @@
                 form.image.required = true;
 
                 document.getElementById('submitBtn').style.display = 'block';
+                document.getElementById('copyBtn').style.display = 'none';
                 document.getElementById('updateBtn').style.display = 'none';
                 document.getElementById('deleteBtn').style.display = 'none';
                 document.getElementById('cancelEditBtn').style.display = 'none';
@@ -336,6 +339,22 @@
 
                 // Вызов твоего будущего бэкенд метода deleteDish
                 sendAdminRequest('/api/admin/deleteDish', 'POST', formData);
+            });
+
+            document.getElementById('copyBtn').addEventListener('click', () => {
+                const form = document.getElementById('dishForm');
+
+                // Проверяем, выбрана ли картинка (обязательно для нового блюда)
+                if (form.image.files.length === 0) {
+                    alert('Чтобы добавить это как новое блюдо, необходимо выбрать картинку!');
+                    return;
+                }
+
+                if (!form.reportValidity()) return;
+
+                const formData = new FormData(form);
+                // Отправляем на существующий метод добавления, игнорируя старый ID
+                sendAdminRequest('/api/admin/addDish', 'POST', formData);
             });
 
             // Запускаем загрузку меню при открытии страницы
