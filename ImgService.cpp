@@ -2,7 +2,17 @@
 
 std::string ImgService::SaveImg(const drogon::HttpFile& img)
 {
-    return std::string();
+
+    std::string ext = std::string(img.getFileExtension());
+
+    ImgName++;
+    std::string fileName = std::to_string(ImgName);
+
+    img.saveAs("/app/img/" + fileName);
+
+    std::string imageUrl = "/img/" + fileName;
+
+    return imageUrl;
 }
 
 bool ImgService::DeleteImg(const std::string& url)

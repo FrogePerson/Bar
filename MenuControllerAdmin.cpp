@@ -27,13 +27,10 @@ void MenuController::addDish(const drogon::HttpRequestPtr& req, std::function<vo
         std::string category = parameters["category"];
 
         auto& imageFile = files[0];
-        std::string ext = std::string(imageFile.getFileExtension());
 
-        std::string fileName = drogon::utils::getUuid() + ext;
+        ImgService::SaveImg(imageFile);
 
-        imageFile.saveAs("/app/img/" + fileName);
-
-        std::string imageUrl = "/img/" + fileName;
+        std::string imageUrl = ImgService::SaveImg(imageFile);
 
         Dish newDish(0, name, cost, imageUrl, description, recommended, category);
         Dish savedDish = MenuService::GetInstance().SaveDish(newDish);
