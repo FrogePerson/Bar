@@ -145,7 +145,15 @@
         </div>
         <div class="form-group">
             <label>Фотография</label>
-            <input type="file" name="image" accept="image/*" required>
+
+            <div id="imageUploadBlock">
+                <input type="file" name="image" accept="image/*" required>
+            </div>
+
+            <div id="imageKeepBlock" style="display: none; align-items: center; justify-content: space-between; background: #222; padding: 12px; border: 1px solid #444; border-radius: 6px; margin-top: 10px;">
+                <span id="imageKeepText" style="color: #aaa; font-size: 14px;">Останется прежняя картинка</span>
+                <button type="button" id="changeImageBtn" style="width: auto; padding: 8px 12px; margin: 0; font-size: 12px; background: #555; color: #fff;">Изменить</button>
+            </div>
         </div>
         <input type="hidden" name="id" id="dishId" value="">
 
@@ -267,6 +275,15 @@
                 form.category.value = dish.category || 'kitchen';
 
                 form.image.required = false;
+                form.image.disabled = true;
+                form.image.value = '';
+
+                document.getElementById('changeImageBtn').innerText = 'Изменить';
+                document.getElementById('changeImageBtn').style.background = '#555';
+                document.getElementById('imageKeepText').innerText = 'Останется прежняя картинка';
+
+                document.getElementById('imageUploadBlock').style.display = 'none';
+                document.getElementById('imageKeepBlock').style.display = 'flex';
 
                 document.getElementById('submitBtn').style.display = 'none';
                 document.getElementById('copyBtn').style.display = 'block';
@@ -282,6 +299,10 @@
                 form.reset();
                 document.getElementById('dishId').value = '';
                 form.image.required = true;
+                form.image.disabled = false;
+
+                document.getElementById('imageUploadBlock').style.display = 'block';
+                document.getElementById('imageKeepBlock').style.display = 'none';
 
                 document.getElementById('submitBtn').style.display = 'block';
                 document.getElementById('copyBtn').style.display = 'none';
@@ -369,7 +390,25 @@
                 sendAdminRequest('/api/admin/addDish', 'POST', formData);
             });
 
-            // Запускаем загрузку меню при открытии страницы
+            document.getElementById('changeImageBtn').addEventListener('click', function () {
+                const form = document.getElementById('dishForm');
+                const uploadBlock = document.getElementById('imageUploadBlock');
+                const keepText = document.getElementById('imageKeepText');
+
+                if (form.image.disabled) {
+                    form.image.disabled = false;
+                    uploadBlock.style.display = 'block';
+                    this.innerText = 'Отменить';
+                    keepText.innerText = 'Загрузка новой картинки';
+                } else {
+                    form.image.disabled = true;
+                    form.image.value = '';
+                    uploadBlock.style.display = 'none';
+                    this.innerText = 'Изменить';
+                    keepText.innerText = 'Останется прежняя картинка';
+                }
+            });
+
             window.addEventListener('DOMContentLoaded', () => fetchAdminMenu());
 
 
